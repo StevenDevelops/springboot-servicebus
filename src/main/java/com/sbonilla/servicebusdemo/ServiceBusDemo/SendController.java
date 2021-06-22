@@ -19,16 +19,29 @@ public class SendController {
     @Autowired
     private JmsTemplate jmsTemplate;
 
+    // curl -X POST 'http://localhost:8080/messages?dest=sbonilla-demo&message=hithere'
     @PostMapping("/messages")
-    public String postMessage(@RequestParam String message) {
+    public String postMessage(@RequestParam String dest, @RequestParam String message) {
         logger.info("Sending message");
-        jmsTemplate.convertAndSend(DESTINATION_NAME, new User(message));
+        jmsTemplate.convertAndSend(dest, new User(message));
+        return message;
+    }
+    /*
+        dest is the service bus name (destination), which can either be a queue or topic.
+        Queue = sbonilla-demo
+        Topic = senj-input
+     */
+    // curl -X POST 'http://localhost:8080/sendtotopic?dest=senj-input&message=hey'
+    @PostMapping("/sendtotopic")
+    public String postToTopic(@RequestParam String dest, @RequestParam String message) {
+        logger.info("Posting to topic");
+        jmsTemplate.convertAndSend(dest, new User(message));
         return message;
     }
 
     @RequestMapping("/healthcheck")
     public String index() {
-        logger.info("run health check");
+        logger.info("ran health check");
         return "Hello world, application healthy";
     }
 }
