@@ -14,6 +14,13 @@ public class SubscriptionReceiveController {
 
     private final Logger logger = LoggerFactory.getLogger(SubscriptionReceiveController.class);
 
+    /*
+        Listener (subscriber) will wait for messages to land in the Topic,
+        and then will be read off (and deleted) by this listener
+
+        try by posting this from terminal
+        curl -X POST 'http://localhost:8080/messages?dest=senj-input&&message=hi55'
+     */
     @JmsListener(destination = TOPIC_NAME, containerFactory = "topicJmsListenerContainerFactory",
             subscription = SUBSCRIPTION_NAME)
     public void receiveMessage(User user) {
